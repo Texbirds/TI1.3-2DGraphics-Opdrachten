@@ -20,7 +20,17 @@ public class Rainbow extends Application {
     
     
     public void draw(FXGraphics2D graphics) {
-
+        for(int i = 0; i < 10000; i++) {
+            int radiusBinnen = 400;
+            int radiusBuiten = 500;
+            float hoek = i/3141.5f;
+            float x1 = (float) (radiusBinnen * -Math.cos(hoek) + (1920 / 2));
+            float y1 = (float) (radiusBinnen * -Math.sin(hoek) + (1080 / 2));
+            float x2 = (float) (radiusBuiten * -Math.cos(hoek) + (1920 / 2));
+            float y2 = (float) (radiusBuiten * -Math.sin(hoek) + (1080 / 2));
+            graphics.setColor(Color.getHSBColor(i/10000.0f, 1, 1));
+            graphics.drawLine((int) x1, (int) y1, (int) x2, (int) y2);
+        }
     }
     
     
