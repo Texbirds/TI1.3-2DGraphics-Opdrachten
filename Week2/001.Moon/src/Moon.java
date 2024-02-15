@@ -1,16 +1,14 @@
-import java.awt.*;
-import java.awt.geom.*;
-
 import javafx.application.Application;
-
-import static javafx.application.Application.launch;
-
-import javafx.scene.Group;
 import javafx.scene.Scene;
 import javafx.scene.layout.BorderPane;
 import javafx.stage.Stage;
 import org.jfree.fx.FXGraphics2D;
 import org.jfree.fx.ResizableCanvas;
+
+import java.awt.*;
+import java.awt.geom.AffineTransform;
+import java.awt.geom.Area;
+import java.awt.geom.Ellipse2D;
 
 public class Moon extends Application {
     private ResizableCanvas canvas;
@@ -33,6 +31,15 @@ public class Moon extends Application {
         graphics.setTransform(new AffineTransform());
         graphics.setBackground(Color.white);
         graphics.clearRect(0, 0, (int) canvas.getWidth(), (int) canvas.getHeight());
+
+        Area path = new Area(new Ellipse2D.Double(200, 200, 110, 110));
+        Area path2 = new Area(new Ellipse2D.Double(210, 190, 130, 130));
+
+        path2.subtract(path);
+        graphics.setColor(Color.black);
+        graphics.fill(path2);
+        graphics.draw(path2);
+
     }
 
 

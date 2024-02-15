@@ -63,7 +63,7 @@ public class Spirograph extends Application {
         //        x = a × cos(b × i) + c × cos(d × i)
         //        y = a × sin(b × i) + c × sin(d × i)
 
-        for (double i = 0; i < 100; i += 0.1) {
+        for (double i = 0; i < 50; i += 0.1) {
             double x = Double.parseDouble(v1.getText()) * Math.cos(Double.parseDouble(v2.getText()) * i) + Double.parseDouble(v3.getText()) * Math.cos(Double.parseDouble(v4.getText()) * i);
             double y = Double.parseDouble(v1.getText()) * Math.sin(Double.parseDouble(v2.getText()) * i) + Double.parseDouble(v3.getText()) * Math.sin(Double.parseDouble(v4.getText()) * i);
             graphics.draw(new Line2D.Double(lastX * scale, lastY * scale, x * scale, y * scale));

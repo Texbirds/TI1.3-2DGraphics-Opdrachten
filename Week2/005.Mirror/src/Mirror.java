@@ -1,16 +1,12 @@
-import java.awt.*;
-import java.awt.geom.*;
-
 import javafx.application.Application;
-
-import static javafx.application.Application.launch;
-
-import javafx.scene.Group;
 import javafx.scene.Scene;
 import javafx.scene.layout.BorderPane;
 import javafx.stage.Stage;
 import org.jfree.fx.FXGraphics2D;
 import org.jfree.fx.ResizableCanvas;
+
+import java.awt.*;
+import java.awt.geom.AffineTransform;
 
 public class Mirror extends Application {
     ResizableCanvas canvas;
