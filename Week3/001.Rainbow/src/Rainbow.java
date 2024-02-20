@@ -33,6 +33,31 @@ public class Rainbow extends Application {
         graphics.setTransform(new AffineTransform());
         graphics.setBackground(Color.white);
         graphics.clearRect(0, 0, (int) canvas.getWidth(), (int) canvas.getHeight());
+
+        String text = "regenboog";
+        Font font = new Font("Arial", Font.PLAIN, 30);
+
+        float hue = 0.0f;
+
+        double angleIncrement = Math.PI / (text.length() - 1);
+        double angle = -Math.PI;
+
+        for (int i = 0; i < text.length(); i++) {
+            char letter = text.charAt(i);
+            String letterStr = String.valueOf(letter);
+
+            graphics.setColor(Color.getHSBColor(hue, 1.0f, 1.0f));
+
+            AffineTransform transform = new AffineTransform();
+            transform.rotate(angle, canvas.getWidth() / 2, canvas.getHeight() / 2);
+            graphics.setTransform(transform);
+
+            graphics.setFont(font);
+            graphics.drawString(letterStr, (float) (canvas.getWidth() / 2 + 100), (float) (canvas.getHeight() / 2));
+
+            angle += angleIncrement;
+            hue += 1.0f / text.length();
+        }
     }
 
 
