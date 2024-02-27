@@ -51,7 +51,15 @@ public class Mirror extends Application {
         graphics.draw(square);
 
         // doos versie 2
-
+        double first = (2 / (1 + Math.pow(2.5, 2))) - 1;
+        double second = (2 * 2.5) / (1 + Math.pow(2.5, 2));
+        double third = (2 * 2.5) / (1 + Math.pow(2.5, 2));
+        double fourth = ((2 * Math.pow(2.5, 2)) / (1 + Math.pow(2.5, 2))) - 1;
+        AffineTransform tx = new AffineTransform(first, second, third, fourth, 0, 0);
+//        tx.scale(0.5, 0.5);
+        Shape secondSquare = tx.createTransformedShape(square);
+        graphics.setColor(Color.GREEN);
+        graphics.draw(secondSquare);
     }
 
     public static void main(String[] args)
