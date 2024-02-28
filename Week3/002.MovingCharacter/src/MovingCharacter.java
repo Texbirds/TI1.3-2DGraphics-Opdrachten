@@ -82,23 +82,6 @@ public class MovingCharacter extends Application {
         graphics.clearRect(0, 0, (int) canvas.getWidth(), (int) canvas.getHeight());
 
         int imageWidth = 64;
-//        int imageHeight = 64;
-//        int spacing = 64;
-//        int imagesPerRow = 8;
-//        int row = 0;
-//        int col = 0;
-//
-//        for (int i = 0; i < 65; i++) {
-//            int x = col * (imageWidth + spacing);
-//            int y = row * (imageHeight + spacing);
-//            graphics.drawImage(tiles[i], x, y, null);
-//
-//            col++;
-//            if (col >= imagesPerRow) {
-//                col = 0;
-//                row++;
-//            }
-//        }
 
         boolean flip = speed < 0;
 

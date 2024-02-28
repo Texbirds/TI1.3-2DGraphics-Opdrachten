@@ -56,7 +56,8 @@ public class Mirror extends Application {
         double third = (2 * 2.5) / (1 + Math.pow(2.5, 2));
         double fourth = ((2 * Math.pow(2.5, 2)) / (1 + Math.pow(2.5, 2))) - 1;
         AffineTransform tx = new AffineTransform(first, second, third, fourth, 0, 0);
-//        tx.scale(0.5, 0.5);
+        tx.translate(canvasWidth/2, canvasHeight/2);
+        tx.scale(0.5, 0.5);
         Shape secondSquare = tx.createTransformedShape(square);
         graphics.setColor(Color.GREEN);
         graphics.draw(secondSquare);

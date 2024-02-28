@@ -99,18 +99,28 @@ public class VerletEngine extends Application {
         constraints.add(new DistanceConstraint(newParticle, nearest));
 
         if (e.getButton() == MouseButton.SECONDARY) {
-            ArrayList<Particle> sorted = new ArrayList<>();
-            sorted.addAll(particles);
+            if (e.isControlDown()) {
+                Collections.sort(particles, (a, b) -> {
+                    return (int) Math.signum(a.getPosition().distance(mousePosition) -
+                            b.getPosition().distance(mousePosition));
+                });
+                Particle particle = new Particle(mousePosition);
+                constraints.add(new DistanceConstraint(particles.get(0), particle, 100));
+                constraints.add(new DistanceConstraint(particles.get(1), particle, 100));
+                particles.add(particle);
+            } else {
+                ArrayList<Particle> sorted = new ArrayList<>();
+                sorted.addAll(particles);
 
-            //sorteer alle elementen op afstand tot de muiscursor. De toegevoegde particle staat op 0, de nearest op 1, en de derde op 2
-            Collections.sort(sorted, new Comparator<Particle>() {
-                @Override
-                public int compare(Particle o1, Particle o2) {
-                    return (int) (o1.getPosition().distance(mousePosition) - o2.getPosition().distance(mousePosition));
-                }
-            });
-
-            constraints.add(new DistanceConstraint(newParticle, sorted.get(2)));
+                //sorteer alle elementen op afstand tot de muiscursor. De toegevoegde particle staat op 0, de nearest op 1, en de derde op 2
+                Collections.sort(sorted, new Comparator<Particle>() {
+                    @Override
+                    public int compare(Particle o1, Particle o2) {
+                        return (int) (o1.getPosition().distance(mousePosition) - o2.getPosition().distance(mousePosition));
+                    }
+                });
+                constraints.add(new DistanceConstraint(newParticle, sorted.get(2)));
+            }
         } else if (e.getButton() == MouseButton.MIDDLE) {
             // Reset
             particles.clear();
