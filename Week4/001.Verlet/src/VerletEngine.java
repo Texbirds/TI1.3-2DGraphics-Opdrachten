@@ -95,20 +95,23 @@ public class VerletEngine extends Application {
         Point2D mousePosition = new Point2D.Double(e.getX(), e.getY());
         Particle nearest = getNearest(mousePosition);
         Particle newParticle = new Particle(mousePosition);
-        particles.add(newParticle);
-        constraints.add(new DistanceConstraint(newParticle, nearest));
+
 
         if (e.getButton() == MouseButton.SECONDARY) {
+            Collections.sort(particles, (a, b) -> {
+                return (int) Math.signum(a.getPosition().distance(mousePosition) -
+                        b.getPosition().distance(mousePosition));
+            });
             if (e.isControlDown()) {
-                Collections.sort(particles, (a, b) -> {
-                    return (int) Math.signum(a.getPosition().distance(mousePosition) -
-                            b.getPosition().distance(mousePosition));
-                });
                 Particle particle = new Particle(mousePosition);
-                constraints.add(new DistanceConstraint(particles.get(0), particle, 100));
                 constraints.add(new DistanceConstraint(particles.get(1), particle, 100));
+                constraints.add(new DistanceConstraint(particles.get(0), particle, 100));
                 particles.add(particle);
+            } else if (e.isShiftDown()) {
+                constraints.add(new DistanceConstraint(particles.get(0), particles.get(1)));
             } else {
+                particles.add(newParticle);
+                constraints.add(new DistanceConstraint(newParticle, nearest));
                 ArrayList<Particle> sorted = new ArrayList<>();
                 sorted.addAll(particles);
 
@@ -126,6 +129,14 @@ public class VerletEngine extends Application {
             particles.clear();
             constraints.clear();
             init();
+        } else if (e.getButton() == MouseButton.PRIMARY) {
+            if (e.isControlDown()) {
+                particles.add(newParticle);
+                constraints.add(new PositionConstraint(newParticle));
+            } else {
+                particles.add(newParticle);
+                constraints.add(new DistanceConstraint(newParticle, nearest));
+            }
         }
     }
 

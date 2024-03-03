@@ -26,8 +26,6 @@ public class Screensaver extends Application {
     private Point2D[] velocities;
     private ArrayList<Line> history;
     private int startList = 0;
-    private int updateCounter;
-    private boolean drawNow;
 
     @Override
     public void start(Stage stage) throws Exception
@@ -90,7 +88,6 @@ public class Screensaver extends Application {
         if (history.size() >= 400) {
             startList = history.size() - 200;
         }
-        updateCounter++;
     }
 
     public void init() {
