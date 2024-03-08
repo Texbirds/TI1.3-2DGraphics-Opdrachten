@@ -26,11 +26,12 @@ public class Screensaver extends Application {
     private Point2D[] velocities;
     private ArrayList<Line> history;
     private int startList = 0;
+    private int numberOfLines;
 
     @Override
     public void start(Stage stage) throws Exception
     {
-
+        numberOfLines = 50;
         BorderPane mainPane = new BorderPane();
         canvas = new ResizableCanvas(g -> draw(g), mainPane);
         mainPane.setCenter(canvas);
@@ -79,14 +80,10 @@ public class Screensaver extends Application {
             Point2D point1 = points[i];
             Point2D point2 = points[(i + 1) % 4];
             graphics.drawLine((int) point1.getX(), (int) point1.getY(), (int) point2.getX(), (int) point2.getY());
-            history.add(new Line((int) point1.getX(), (int) point1.getY(), (int) point2.getX(), (int) point2.getY()));
         }
 
         for (int i = startList; i < history.size(); i++) {
            graphics.drawLine(history.get(i).getLocationX1(), history.get(i).getLocationY1(), history.get(i).getLocationX2(), history.get(i).getLocationY2());
-        }
-        if (history.size() >= 400) {
-            startList = history.size() - 200;
         }
     }
 
@@ -106,20 +103,50 @@ public class Screensaver extends Application {
         velocities[3] = new Point2D(50,50);
     }
 
+    private double timeAccumulator = 0;
     public void update(double deltaTime) {
+        timeAccumulator+= deltaTime;
+
         for (int i = 0; i < 4; i++) {
             Point2D point = points[i];
             Point2D velocity = velocities[i];
             point = point.add(velocity.multiply(deltaTime));
-            if (point.getX() <= 0 || point.getX() >= canvas.getWidth())
+            if (point.getX() <= 0 || point.getX() >= canvas.getWidth()) {
                 velocity = new Point2D(-velocity.getX(), velocity.getY());
-            if (point.getY() <= 0 || point.getY() >= canvas.getHeight())
+                if (point.getX() <= 0) {
+                    points[i] = new Point2D(0, points[i].getY());
+                }
+                if (point.getY() >= canvas.getWidth()) {
+                    points[i] = new Point2D(points[i].getX(), 0);
+                }
+            }
+            if (point.getY() <= 0 || point.getY() >= canvas.getHeight()) {
                 velocity = new Point2D(velocity.getX(), -velocity.getY());
+                if (point.getY() <= 0) {
+                    points[i] = new Point2D(points[i].getX(), 0);
+                }
+                if (point.getY() >= canvas.getHeight()) {
+                    points[i] = new Point2D(points[i].getX(), canvas.getHeight());
+                }
+            }
             points[i] = point;
             velocities[i] = velocity;
             Point2D point1 = points[i];
             Point2D point2 = points[(i + 1) % 4];
-            history.add(new Line((int) point1.getX(), (int) point1.getY(), (int) point2.getX(), (int) point2.getY()));
+        }
+
+        double frameTime = 1.0/15;
+        while (timeAccumulator > frameTime) {
+            timeAccumulator -= frameTime;
+
+            for (int i = 0; i < 4; i++) {
+                Point2D point1 = points[i];
+                Point2D point2 = points[(i + 1) % 4];
+                history.add(new Line((int) point1.getX(), (int) point1.getY(), (int) point2.getX(), (int) point2.getY()));
+            }
+            while (history.size() > points.length*numberOfLines) {
+                history.remove(0);
+            }
         }
     }
 
