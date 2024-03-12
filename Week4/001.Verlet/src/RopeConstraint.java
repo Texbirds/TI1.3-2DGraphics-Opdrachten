@@ -34,10 +34,12 @@ public class RopeConstraint implements Constraint, Serializable {
             BA = new Point2D.Double(1, 0);
         }
 
-        a.setPosition(new Point2D.Double(a.getPosition().getX() + BA.getX() * adjustmentDistance,
-                a.getPosition().getY() + BA.getY() * adjustmentDistance));
-        b.setPosition(new Point2D.Double(b.getPosition().getX() - BA.getX() * adjustmentDistance,
-                b.getPosition().getY() - BA.getY() * adjustmentDistance));
+        if (a.getPosition().distance(b.getPosition()) - distance > 0) {
+            a.setPosition(new Point2D.Double(a.getPosition().getX() + BA.getX() * adjustmentDistance,
+                    a.getPosition().getY() + BA.getY() * adjustmentDistance));
+            b.setPosition(new Point2D.Double(b.getPosition().getX() - BA.getX() * adjustmentDistance,
+                    b.getPosition().getY() - BA.getY() * adjustmentDistance));
+        }
     }
 
     @Override

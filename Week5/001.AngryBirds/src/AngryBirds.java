@@ -9,7 +9,9 @@ import javafx.scene.Scene;
 import javafx.scene.control.CheckBox;
 import javafx.scene.layout.BorderPane;
 import javafx.stage.Stage;
+import org.dyn4j.dynamics.Body;
 import org.dyn4j.dynamics.World;
+import org.dyn4j.geometry.Geometry;
 import org.dyn4j.geometry.Vector2;
 import org.jfree.fx.FXGraphics2D;
 import org.jfree.fx.ResizableCanvas;
@@ -41,6 +43,8 @@ public class AngryBirds extends Application {
 
         camera = new Camera(canvas, g -> draw(g), g2d);
         mousePicker = new MousePicker(canvas);
+
+        createBlocks();
 
         new AnimationTimer() {
             long last = -1;
@@ -96,6 +100,27 @@ public class AngryBirds extends Application {
 
     public static void main(String[] args) {
         launch(AngryBirds.class);
+    }
+
+    private Body createBlock(double x, double y, double width, double height) {
+        Body blockBody = new Body();
+        blockBody.addFixture(Geometry.createRectangle(width, height));
+        blockBody.translate(x, y);
+        world.addBody(blockBody);
+        return blockBody;
+    }
+
+    private void createBlocks() {
+        double blockWidth = 50;
+        double blockHeight = 50;
+        int numBlocks = 5;
+        double gap = 10;
+        double startY = canvas.getHeight() - (numBlocks * (blockHeight + gap));
+        for (int i = 0; i < numBlocks; i++) {
+            double x = canvas.getWidth() - blockWidth;
+            double y = startY + i * (blockHeight + gap);
+            createBlock(x, y, blockWidth, blockHeight);
+        }
     }
 
 }
