@@ -12,6 +12,7 @@ import javafx.stage.Stage;
 import org.dyn4j.dynamics.Body;
 import org.dyn4j.dynamics.World;
 import org.dyn4j.geometry.Geometry;
+import org.dyn4j.geometry.MassType;
 import org.dyn4j.geometry.Vector2;
 import org.jfree.fx.FXGraphics2D;
 import org.jfree.fx.ResizableCanvas;
@@ -22,7 +23,7 @@ public class AngryBirds extends Application {
     private World world;
     private MousePicker mousePicker;
     private Camera camera;
-    private boolean debugSelected = false;
+    private boolean debugSelected = true;
     private ArrayList<GameObject> gameObjects = new ArrayList<>();
 
     @Override
@@ -44,8 +45,6 @@ public class AngryBirds extends Application {
         camera = new Camera(canvas, g -> draw(g), g2d);
         mousePicker = new MousePicker(canvas);
 
-        createBlocks();
-
         new AnimationTimer() {
             long last = -1;
 
@@ -64,11 +63,48 @@ public class AngryBirds extends Application {
         stage.setTitle("Angry Birds");
         stage.show();
         draw(g2d);
+
+        init();
     }
 
     public void init() {
         world = new World();
         world.setGravity(new Vector2(0, -9.8));
+
+        Body floor = new Body();
+        floor.addFixture(Geometry.createRectangle(50, 1));
+        floor.getTransform().setTranslation(0, -0.5);
+        floor.setMass(MassType.INFINITE);
+        world.addBody(floor);
+//        gameObjects.add(new GameObject("C:\\Users\\kwint\\OneDrive\\Documenten\\GitHub\\TI1.3-2DGraphics-Opdrachten\\Week5\\images\\floor.png", floor, new Vector2(0,0), 1));
+
+        Body wall2 = new Body();
+        wall2.addFixture(Geometry.createRectangle(0.15, 10));
+        wall2.getTransform().setTranslation(-10,5);
+        wall2.setMass(MassType.INFINITE);
+        world.addBody(wall2);
+
+        Body bird = new Body();
+        bird.addFixture(Geometry.createCircle(0.15));
+        bird.getTransform().setTranslation(0,2.4);
+        bird.setMass(MassType.NORMAL);
+        bird.getFixture(0).setRestitution(0.15);
+        world.addBody(bird);
+
+        createObject(6, 0, 0.25, 3);
+        createObject(9, 0, 0.25, 3);
+        createObject(7.5, 3, 3.5, 0.25);
+        createObject(6.5, 5, 0.25, 3);
+        createObject(8.5, 5, 0.25, 3);
+        createObject(7.5, 6, 3.1, 0.25);
+    }
+
+    private void createObject(double locationX, double locationY, double width, double height) {
+        Body object = new Body();
+        object.addFixture(Geometry.createRectangle(width, height));
+        object.getTransform().setTranslation(locationX, locationY);
+        object.setMass(MassType.NORMAL);
+        world.addBody(object);
     }
 
     public void draw(FXGraphics2D graphics) {
@@ -100,27 +136,6 @@ public class AngryBirds extends Application {
 
     public static void main(String[] args) {
         launch(AngryBirds.class);
-    }
-
-    private Body createBlock(double x, double y, double width, double height) {
-        Body blockBody = new Body();
-        blockBody.addFixture(Geometry.createRectangle(width, height));
-        blockBody.translate(x, y);
-        world.addBody(blockBody);
-        return blockBody;
-    }
-
-    private void createBlocks() {
-        double blockWidth = 50;
-        double blockHeight = 50;
-        int numBlocks = 5;
-        double gap = 10;
-        double startY = canvas.getHeight() - (numBlocks * (blockHeight + gap));
-        for (int i = 0; i < numBlocks; i++) {
-            double x = canvas.getWidth() - blockWidth;
-            double y = startY + i * (blockHeight + gap);
-            createBlock(x, y, blockWidth, blockHeight);
-        }
     }
 
 }
