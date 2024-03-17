@@ -1,32 +1,15 @@
 import javafx.animation.AnimationTimer;
 import javafx.application.Application;
-import javafx.scene.Group;
 import javafx.scene.Scene;
-import javafx.scene.canvas.Canvas;
-import javafx.scene.canvas.GraphicsContext;
 import javafx.stage.Stage;
 import org.jfree.fx.FXGraphics2D;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
-
 import java.awt.*;
-import java.awt.geom.*;
-import java.io.*;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
-import javafx.animation.AnimationTimer;
-import javafx.application.Application;
-import static javafx.application.Application.launch;
-import javafx.scene.Scene;
-import javafx.scene.control.Alert;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.BorderPane;
-import javafx.stage.Stage;
-import org.jfree.fx.FXGraphics2D;
 import org.jfree.fx.ResizableCanvas;
 
 public class ParticleSimulation extends Application {
