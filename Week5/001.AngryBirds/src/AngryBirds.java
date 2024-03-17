@@ -1,6 +1,9 @@
 
 import java.awt.*;
 import java.awt.geom.*;
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import javafx.animation.AnimationTimer;
 import javafx.application.Application;
@@ -16,6 +19,8 @@ import org.dyn4j.geometry.MassType;
 import org.dyn4j.geometry.Vector2;
 import org.jfree.fx.FXGraphics2D;
 import org.jfree.fx.ResizableCanvas;
+
+import javax.imageio.ImageIO;
 
 public class AngryBirds extends Application {
 
@@ -67,25 +72,48 @@ public class AngryBirds extends Application {
         init();
     }
 
-    public void init() {
+    public void init() throws IOException {
+        double floorSize = 23.4375;
+        double wallLocationX = floorSize + (floorSize/2);
+
+        String floorPath = "C:\\Users\\kwint\\OneDrive\\Documenten\\GitHub\\TI1.3-2DGraphics-Opdrachten\\Week5\\images\\floor.png";
+
         world = new World();
         world.setGravity(new Vector2(0, -9.8));
 
         Body floor = new Body();
-        floor.addFixture(Geometry.createRectangle(50, 1));
+        floor.addFixture(Geometry.createRectangle(floorSize, 1));
         floor.getTransform().setTranslation(0, -0.5);
         floor.setMass(MassType.INFINITE);
         world.addBody(floor);
-//        gameObjects.add(new GameObject("C:\\Users\\kwint\\OneDrive\\Documenten\\GitHub\\TI1.3-2DGraphics-Opdrachten\\Week5\\images\\floor.png", floor, new Vector2(0,0), 1));
+//        gameObjects.add(new GameObject(floorPath, floor, new Vector2(0,0), 1));
+
+        Body floor2 = new Body();
+        floor2.addFixture(Geometry.createRectangle(floorSize, 1));
+        floor2.getTransform().setTranslation(floorSize, -0.5);
+        floor2.setMass(MassType.INFINITE);
+        world.addBody(floor2);
+
+        Body floor3 = new Body();
+        floor3.addFixture(Geometry.createRectangle(floorSize, 1));
+        floor3.getTransform().setTranslation(-floorSize, -0.5);
+        floor3.setMass(MassType.INFINITE);
+        world.addBody(floor3);
 
         Body wall2 = new Body();
         wall2.addFixture(Geometry.createRectangle(0.15, 10));
-        wall2.getTransform().setTranslation(-10,5);
+        wall2.getTransform().setTranslation(-wallLocationX,5);
         wall2.setMass(MassType.INFINITE);
         world.addBody(wall2);
 
+        Body wall1 = new Body();
+        wall1.addFixture(Geometry.createRectangle(0.15, 10));
+        wall1.getTransform().setTranslation(wallLocationX,5);
+        wall1.setMass(MassType.INFINITE);
+        world.addBody(wall1);
+
         Body bird = new Body();
-        bird.addFixture(Geometry.createCircle(0.15));
+        bird.addFixture(Geometry.createCircle(0.2));
         bird.getTransform().setTranslation(0,2.4);
         bird.setMass(MassType.NORMAL);
         bird.getFixture(0).setRestitution(0.15);
