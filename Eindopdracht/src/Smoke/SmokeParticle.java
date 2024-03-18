@@ -19,7 +19,7 @@ public class SmokeParticle {
         this.y = y;
         this.vx = vx;
         this.vy = vy;
-        this.radius = 20;
+        this.radius = 15;
         this.age = 0;
         this.alpha = INITIAL_ALPHA;
     }

@@ -65,6 +65,7 @@ public class ParticleSimulation extends Application {
     private void mousePressed(MouseEvent e) {
         if (e.getButton() == MouseButton.SECONDARY) {
             fireworks.add(new Firework(e.getX(), e.getY(), createRandomColor()));
+            activateSmoke = false;
         } else if (e.getButton() == MouseButton.PRIMARY) {
             activateSmoke = true;
         } else {

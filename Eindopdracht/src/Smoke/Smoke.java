@@ -8,10 +8,10 @@ import java.util.List;
 import java.util.Random;
 
 public class Smoke {
-    private static final int NUM_PARTICLES = 5;
-    public static final double GRAVITY = -100;
-    private static final double INITIAL_SPEED = 10;
-    private static final double EXPLOSION_SPEED = 20;
+    private static final int NUM_PARTICLES = 10;
+    public static final double GRAVITY = -200;
+    private static final double INITIAL_SPEED = 20;
+    private static final double EXPLOSION_SPEED = 30;
 
     private List<SmokeParticle> particles;
     private double x;
