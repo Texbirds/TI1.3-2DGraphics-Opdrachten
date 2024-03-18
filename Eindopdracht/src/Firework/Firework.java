@@ -1,3 +1,4 @@
+package Firework;
 
 import java.awt.*;
 import org.jfree.fx.FXGraphics2D;

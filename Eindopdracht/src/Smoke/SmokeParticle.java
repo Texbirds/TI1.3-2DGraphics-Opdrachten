@@ -1,4 +1,8 @@
-public class FireworkParticle {
+package Smoke;
+
+import Smoke.Smoke;
+
+public class SmokeParticle {
     public static final double FADE_TIME = 1.0;
     private static final double INITIAL_ALPHA = 1.0;
 
@@ -10,12 +14,12 @@ public class FireworkParticle {
     private double age;
     private double alpha;
 
-    public FireworkParticle(double x, double y, double vx, double vy, double radius) {
+    public SmokeParticle(double x, double y, double vx, double vy) {
         this.x = x;
         this.y = y;
         this.vx = vx;
         this.vy = vy;
-        this.radius = radius;
+        this.radius = 20;
         this.age = 0;
         this.alpha = INITIAL_ALPHA;
     }
@@ -23,7 +27,7 @@ public class FireworkParticle {
     public void update(double deltaTime) {
         x += vx * deltaTime;
         y += vy * deltaTime;
-        vy += Firework.GRAVITY * deltaTime;
+        vy += Smoke.GRAVITY * deltaTime;
         age += deltaTime;
 
         alpha = 1.0 - Math.min(age / FADE_TIME, 1.0);

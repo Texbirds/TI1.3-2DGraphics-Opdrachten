@@ -1,3 +1,5 @@
+import Firework.Firework;
+import Smoke.Smoke;
 import javafx.animation.AnimationTimer;
 import javafx.application.Application;
 import javafx.scene.Scene;
@@ -14,8 +16,10 @@ import org.jfree.fx.ResizableCanvas;
 
 public class ParticleSimulation extends Application {
 
+    private List<Smoke> smokes;
     private List<Firework> fireworks;
     private ResizableCanvas canvas;
+    private boolean activateSmoke;
 
     @Override
     public void start(Stage stage) throws Exception {
@@ -24,6 +28,8 @@ public class ParticleSimulation extends Application {
         mainPane.setCenter(canvas);
         FXGraphics2D g2d = new FXGraphics2D(canvas.getGraphicsContext2D());
         fireworks = new ArrayList<>();
+        smokes = new ArrayList<Smoke>();
+        activateSmoke = false;
 
 
         new AnimationTimer() {
@@ -44,7 +50,7 @@ public class ParticleSimulation extends Application {
 //        canvas.setOnMouseClicked(e -> mouseClicked(e));
         canvas.setOnMousePressed(e -> mousePressed(e));
 //        canvas.setOnMouseReleased(e -> mouseReleased(e));
-//        canvas.setOnMouseDragged(e -> mouseDragged(e));
+        canvas.setOnMouseDragged(e -> mouseDragged(e));
 
         stage.setScene(new Scene(mainPane));
         stage.setTitle("Particle simulation");
@@ -59,6 +65,16 @@ public class ParticleSimulation extends Application {
     private void mousePressed(MouseEvent e) {
         if (e.getButton() == MouseButton.SECONDARY) {
             fireworks.add(new Firework(e.getX(), e.getY(), createRandomColor()));
+        } else if (e.getButton() == MouseButton.PRIMARY) {
+            activateSmoke = true;
+        } else {
+            activateSmoke = false;
+        }
+    }
+
+    private void mouseDragged(MouseEvent e) {
+        if (activateSmoke) {
+            smokes.add(new Smoke(e.getX(), e.getY()));
         }
     }
 
@@ -73,6 +89,10 @@ public class ParticleSimulation extends Application {
         for (Firework firework : fireworks) {
             firework.draw(graphics);
         }
+
+        for (Smoke smoke : smokes) {
+            smoke.draw(graphics);
+        }
     }
 
     private void update(double deltaTime) {
@@ -80,6 +100,11 @@ public class ParticleSimulation extends Application {
             firework.update(deltaTime);
         }
 
+        for (Smoke smoke : smokes) {
+            smoke.update(deltaTime);
+        }
+
         fireworks.removeIf(Firework::isFinished);
+        smokes.removeIf(Smoke::isFinished);
     }
 }
