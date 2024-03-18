@@ -76,7 +76,7 @@ public class AngryBirds extends Application {
         double floorSize = 23.4375;
         double wallLocationX = floorSize + (floorSize/2);
 
-        String floorPath = "C:\\Users\\kwint\\OneDrive\\Documenten\\GitHub\\TI1.3-2DGraphics-Opdrachten\\Week5\\images\\floor.png";
+        String floorPath = "/floor.png";
 
         world = new World();
         world.setGravity(new Vector2(0, -9.8));
@@ -86,7 +86,7 @@ public class AngryBirds extends Application {
         floor.getTransform().setTranslation(0, -0.5);
         floor.setMass(MassType.INFINITE);
         world.addBody(floor);
-//        gameObjects.add(new GameObject(floorPath, floor, new Vector2(0,0), 1));
+        gameObjects.add(new GameObject("C:\\Users\\kwint\\OneDrive\\Documenten\\GitHub\\TI1.3-2DGraphics-Opdrachten\\Week5\\001.AngryBirds\\images\\floor.png", floor, new Vector2(0,0), 1));
 
         Body floor2 = new Body();
         floor2.addFixture(Geometry.createRectangle(floorSize, 1));

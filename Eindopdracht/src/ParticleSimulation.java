@@ -25,6 +25,7 @@ public class ParticleSimulation extends Application {
         FXGraphics2D g2d = new FXGraphics2D(canvas.getGraphicsContext2D());
         fireworks = new ArrayList<>();
 
+
         new AnimationTimer() {
             long last = -1;
 
