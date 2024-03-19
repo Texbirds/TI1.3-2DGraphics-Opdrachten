@@ -16,6 +16,7 @@ public class ParticleSimulation extends Application {
 
     private List<Smoke> smokes;
     private List<Firework> fireworks;
+    private List<Fire> fires;
     private ResizableCanvas canvas;
     private boolean activateSmoke;
 
@@ -26,7 +27,8 @@ public class ParticleSimulation extends Application {
         mainPane.setCenter(canvas);
         FXGraphics2D g2d = new FXGraphics2D(canvas.getGraphicsContext2D());
         fireworks = new ArrayList<>();
-        smokes = new ArrayList<Smoke>();
+        smokes = new ArrayList<>();
+        fires = new ArrayList<>();
         activateSmoke = false;
 
 
@@ -66,6 +68,11 @@ public class ParticleSimulation extends Application {
             activateSmoke = false;
         } else if (e.getButton() == MouseButton.PRIMARY) {
             activateSmoke = true;
+        } else if (e.getButton() == MouseButton.MIDDLE) {
+            Fire currentFire = new Fire(e.getX(), e.getY());
+            fires.add(currentFire);
+            currentFire.activate();
+            activateSmoke = false;
         } else {
             activateSmoke = false;
         }
@@ -92,6 +99,10 @@ public class ParticleSimulation extends Application {
         for (Smoke smoke : smokes) {
             smoke.draw(graphics);
         }
+
+        for (Fire fire : fires) {
+            fire.draw(graphics);
+        }
     }
 
     private void update(double deltaTime) {
@@ -103,6 +114,11 @@ public class ParticleSimulation extends Application {
             smoke.update(deltaTime);
         }
 
+        for (Fire fire : fires) {
+            fire.update(deltaTime);
+        }
+
+        fires.removeIf(Fire::isFinished);
         fireworks.removeIf(Firework::isFinished);
         smokes.removeIf(Smoke::isFinished);
     }
