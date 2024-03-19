@@ -6,10 +6,9 @@ import java.util.List;
 import java.util.Random;
 
 public class Fire {
-    private static final int NUM_PARTICLES = 100;
+    private static final int NUM_PARTICLES = 5;
     private static final double INITIAL_SPEED = 40;
-    private static final double ANGLE_VARIATION = Math.PI / 2;
-    private static final double EXPLOSION_SPEED = 10;
+    private static final double EXPLOSION_SPEED = 100;
 
     private List<Particle> particles;
     private double gravity;
@@ -19,8 +18,8 @@ public class Fire {
     private double fadeTime;
     private boolean spawned;
     private boolean active;
-    private boolean exploded;
 
+    private boolean exploded;
     private long activationTime;
 
     public Fire(double x, double y) {
@@ -30,7 +29,7 @@ public class Fire {
         this.spawned = false;
         this.active = false;
         this.activationTime = 0;
-        this.radius = 10;
+        this.radius = 20;
         this.gravity = -300;
         this.fadeTime = 0.5;
         exploded = false;

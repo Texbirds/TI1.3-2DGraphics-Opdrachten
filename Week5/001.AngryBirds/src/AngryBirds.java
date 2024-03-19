@@ -28,7 +28,7 @@ public class AngryBirds extends Application {
     private World world;
     private MousePicker mousePicker;
     private Camera camera;
-    private boolean debugSelected = true;
+    private boolean debugSelected = false;
     private ArrayList<GameObject> gameObjects = new ArrayList<>();
 
     @Override
@@ -68,8 +68,6 @@ public class AngryBirds extends Application {
         stage.setTitle("Angry Birds");
         stage.show();
         draw(g2d);
-
-        init();
     }
 
     public void init() throws IOException {
@@ -121,12 +119,13 @@ public class AngryBirds extends Application {
         bird.setBullet(true);
         gameObjects.add(new GameObject("/bird.png", bird, new Vector2(0,0), 0.1));
 
-        createObject(6, 0, 0.25, 3, "/woodVertical.png");
-        createObject(8.8, 0, 0.25, 3, "/woodVertical.png");
-        createObject(7.5, 3, 3, 0.25, "/woodHorizontal.png");
-        createObject(6.75, 5, 0.25, 3, "/woodVertical.png");
-        createObject(8.25, 5, 0.25, 3, "/woodVertical.png");
-        createObject(7.5, 6, 3, 0.25, "/woodHorizontal.png");
+
+        createObject(6, 1.55, 0.3586, 3, "/woodVertical.png");
+        createObject(8.8, 1.55, 0.3586, 3, "/woodVertical.png");
+        createObject(7.5, 3.2, 3, 0.3586, "/woodHorizontal.png");
+        createObject(6.75, 4.9, 0.3586, 3, "/woodVertical.png");
+        createObject(8.25, 4.9, 0.3586, 3, "/woodVertical.png");
+        createObject(7.5, 6.4, 3, 0.25, "/woodHorizontal.png");
     }
 
     private void createObject(double locationX, double locationY, double width, double height, String imageFile) {
@@ -135,7 +134,7 @@ public class AngryBirds extends Application {
         object.getTransform().setTranslation(locationX, locationY);
         object.setMass(MassType.NORMAL);
         world.addBody(object);
-        gameObjects.add(new GameObject("imageFile", object, new Vector2(0,0), 1));
+        gameObjects.add(new GameObject(imageFile, object, new Vector2(0,0), 1.65));
     }
 
     public void draw(FXGraphics2D graphics) {
@@ -148,13 +147,13 @@ public class AngryBirds extends Application {
         graphics.setTransform(camera.getTransform((int) canvas.getWidth(), (int) canvas.getHeight()));
         graphics.scale(1, -1);
 
-        for (GameObject go : gameObjects) {
-            go.draw(graphics);
-        }
-
         if (debugSelected) {
             graphics.setColor(Color.blue);
             DebugDraw.draw(graphics, world, 100);
+        }
+
+        for (GameObject go : gameObjects) {
+            go.draw(graphics);
         }
 
         graphics.setTransform(originalTransform);
