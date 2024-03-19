@@ -76,8 +76,6 @@ public class AngryBirds extends Application {
         double floorSize = 23.4375;
         double wallLocationX = floorSize + (floorSize/2);
 
-        String floorPath = "/floor.png";
-
         world = new World();
         world.setGravity(new Vector2(0, -9.8));
 
@@ -86,19 +84,21 @@ public class AngryBirds extends Application {
         floor.getTransform().setTranslation(0, -0.5);
         floor.setMass(MassType.INFINITE);
         world.addBody(floor);
-        gameObjects.add(new GameObject("C:\\Users\\kwint\\OneDrive\\Documenten\\GitHub\\TI1.3-2DGraphics-Opdrachten\\Week5\\001.AngryBirds\\images\\floor.png", floor, new Vector2(0,0), 1));
+        gameObjects.add(new GameObject("/floor.png", floor, new Vector2(0,0), 1.6));
 
         Body floor2 = new Body();
         floor2.addFixture(Geometry.createRectangle(floorSize, 1));
         floor2.getTransform().setTranslation(floorSize, -0.5);
         floor2.setMass(MassType.INFINITE);
         world.addBody(floor2);
+        gameObjects.add(new GameObject("/floor.png", floor2, new Vector2(0,0), 1.6));
 
         Body floor3 = new Body();
         floor3.addFixture(Geometry.createRectangle(floorSize, 1));
         floor3.getTransform().setTranslation(-floorSize, -0.5);
         floor3.setMass(MassType.INFINITE);
         world.addBody(floor3);
+        gameObjects.add(new GameObject("/floor.png", floor3, new Vector2(0,0), 1.6));
 
         Body wall2 = new Body();
         wall2.addFixture(Geometry.createRectangle(0.15, 10));
@@ -118,21 +118,24 @@ public class AngryBirds extends Application {
         bird.setMass(MassType.NORMAL);
         bird.getFixture(0).setRestitution(0.15);
         world.addBody(bird);
+        bird.setBullet(true);
+        gameObjects.add(new GameObject("/bird.png", bird, new Vector2(0,0), 0.1));
 
-        createObject(6, 0, 0.25, 3);
-        createObject(9, 0, 0.25, 3);
-        createObject(7.5, 3, 3.5, 0.25);
-        createObject(6.5, 5, 0.25, 3);
-        createObject(8.5, 5, 0.25, 3);
-        createObject(7.5, 6, 3.1, 0.25);
+        createObject(6, 0, 0.25, 3, "/woodVertical.png");
+        createObject(8.8, 0, 0.25, 3, "/woodVertical.png");
+        createObject(7.5, 3, 3, 0.25, "/woodHorizontal.png");
+        createObject(6.75, 5, 0.25, 3, "/woodVertical.png");
+        createObject(8.25, 5, 0.25, 3, "/woodVertical.png");
+        createObject(7.5, 6, 3, 0.25, "/woodHorizontal.png");
     }
 
-    private void createObject(double locationX, double locationY, double width, double height) {
+    private void createObject(double locationX, double locationY, double width, double height, String imageFile) {
         Body object = new Body();
         object.addFixture(Geometry.createRectangle(width, height));
         object.getTransform().setTranslation(locationX, locationY);
         object.setMass(MassType.NORMAL);
         world.addBody(object);
+        gameObjects.add(new GameObject("imageFile", object, new Vector2(0,0), 1));
     }
 
     public void draw(FXGraphics2D graphics) {

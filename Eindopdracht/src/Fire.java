@@ -9,6 +9,7 @@ public class Fire {
     private static final int NUM_PARTICLES = 100;
     private static final double INITIAL_SPEED = 40;
     private static final double ANGLE_VARIATION = Math.PI / 2;
+    private static final double EXPLOSION_SPEED = 10;
 
     private List<Particle> particles;
     private double gravity;
@@ -18,6 +19,7 @@ public class Fire {
     private double fadeTime;
     private boolean spawned;
     private boolean active;
+    private boolean exploded;
 
     private long activationTime;
 
@@ -28,16 +30,22 @@ public class Fire {
         this.spawned = false;
         this.active = false;
         this.activationTime = 0;
-        this.radius = 15;
-        this.gravity = -200;
-        this.fadeTime = 2.0;
+        this.radius = 10;
+        this.gravity = -300;
+        this.fadeTime = 0.5;
+        exploded = false;
     }
 
     public void update(double deltaTime) {
+//        if (!exploded) {
+//            explode();
+//        }
         if (active) {
             long currentTime = System.currentTimeMillis();
             if (currentTime - activationTime > 5000) {
                 active = false;
+                particles.clear();
+                spawned = true;
                 return;
             }
 
@@ -46,6 +54,18 @@ public class Fire {
                 particle.update(deltaTime);
             }
         }
+        System.out.println(particles.size());
+//        if (particles.size() >= 60000) {
+//
+//        }
+    }
+
+    private void explode() {
+        Random random = new Random();
+        for (int i = 0; i < NUM_PARTICLES; i++) {
+
+        }
+        exploded = true;
     }
 
     public void activate() {
@@ -68,11 +88,11 @@ public class Fire {
     private void spawnParticles() {
         Random random = new Random();
         for (int i = 0; i < NUM_PARTICLES; i++) {
-            double angle = Math.PI + random.nextDouble() * ANGLE_VARIATION * 2 - ANGLE_VARIATION;
-            double speed = random.nextDouble() * INITIAL_SPEED;
+            double angle = random.nextDouble() * 2 * Math.PI;
+            double speed = random.nextDouble() * (EXPLOSION_SPEED - INITIAL_SPEED) + INITIAL_SPEED;
             double vx = Math.cos(angle) * speed;
-            double vy = -Math.abs(Math.sin(angle) * speed);
-            particles.add(new Particle(x, y, vx, vy, 3, 0, fadeTime));
+            double vy = Math.sin(angle) * speed;
+            particles.add(new Particle(x, y, vx, vy, radius, gravity, fadeTime));
         }
     }
 
