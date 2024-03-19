@@ -1,5 +1,3 @@
-package Firework;
-
 import java.awt.*;
 import org.jfree.fx.FXGraphics2D;
 
@@ -9,13 +7,15 @@ import java.util.Random;
 
 public class Firework {
     private static final int NUM_PARTICLES = 500;
-    public static final double GRAVITY = 200;
     private static final double INITIAL_SPEED = 300;
     private static final double EXPLOSION_SPEED = 700;
 
-    private List<FireworkParticle> particles;
+    private List<Particle> particles;
+    private double gravity;
     private double x;
     private double y;
+    private double radius;
+    private double fadeTime;
     private boolean exploded;
     private Color color;
 
@@ -25,13 +25,16 @@ public class Firework {
         this.color = color;
         particles = new ArrayList<>();
         exploded = false;
+        this.radius = 10;
+        this.gravity = 200;
+        this.fadeTime = 2.0;
     }
 
     public void update(double deltaTime) {
         if (!exploded) {
             explode();
         } else {
-            for (FireworkParticle particle : particles) {
+            for (Particle particle : particles) {
                 particle.update(deltaTime);
             }
         }
@@ -42,7 +45,7 @@ public class Firework {
             graphics.setColor(color);
             graphics.fillOval((int) x, (int) y, 10, 10);
         } else {
-            for (FireworkParticle particle : particles) {
+            for (Particle particle : particles) {
                 Color particleColor = new Color(color.getRed(), color.getGreen(), color.getBlue(), (int) (particle.getAlpha() * 255));
                 graphics.setColor(particleColor);
                 graphics.fillOval((int) particle.x, (int) particle.y, (int) particle.getRadius(), (int) particle.getRadius());
@@ -57,8 +60,7 @@ public class Firework {
             double speed = random.nextDouble() * (EXPLOSION_SPEED - INITIAL_SPEED) + INITIAL_SPEED;
             double vx = Math.cos(angle) * speed;
             double vy = Math.sin(angle) * speed;
-            double radius = 5;
-            particles.add(new FireworkParticle(x, y, vx, vy, radius));
+            particles.add(new Particle(x, y, vx, vy, radius, gravity, fadeTime));
         }
         exploded = true;
     }
