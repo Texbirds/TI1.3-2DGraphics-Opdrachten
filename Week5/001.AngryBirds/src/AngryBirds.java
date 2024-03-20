@@ -10,6 +10,8 @@ import javafx.application.Application;
 import static javafx.application.Application.launch;
 import javafx.scene.Scene;
 import javafx.scene.control.CheckBox;
+import javafx.scene.input.MouseButton;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.BorderPane;
 import javafx.stage.Stage;
 import org.dyn4j.dynamics.Body;
@@ -31,6 +33,16 @@ public class AngryBirds extends Application {
     private boolean debugSelected = false;
     private ArrayList<GameObject> gameObjects = new ArrayList<>();
 
+    private double mousePressX;
+    private double mousePressY;
+    private double mouseReleaseX;
+    private double mouseReleaseY;
+    private boolean isDragging = false;
+    private int index;
+
+    private Body bird;
+    private Body birdHolder;
+
     @Override
     public void start(Stage stage) throws Exception {
 
@@ -48,7 +60,6 @@ public class AngryBirds extends Application {
         FXGraphics2D g2d = new FXGraphics2D(canvas.getGraphicsContext2D());
 
         camera = new Camera(canvas, g -> draw(g), g2d);
-        mousePicker = new MousePicker(canvas);
 
         new AnimationTimer() {
             long last = -1;
@@ -64,10 +75,42 @@ public class AngryBirds extends Application {
             }
         }.start();
 
+        canvas.setOnMouseClicked(e -> {
+            if (e.getButton() == MouseButton.MIDDLE) {
+                return;
+            }
+            mouseClicked(e);
+        });
+        canvas.setOnMouseReleased(e -> mouseReleased(e));
+
+        mousePicker = new MousePicker(canvas);
+
         stage.setScene(new Scene(mainPane, 1920, 1080));
         stage.setTitle("Angry Birds");
         stage.show();
         draw(g2d);
+    }
+
+    private void mouseClicked(MouseEvent e) {
+        world.removeBody(birdHolder);
+        mousePressX = e.getX();
+        mousePressY = e.getY();
+        isDragging = true;
+    }
+
+    private void mouseReleased(MouseEvent e) {
+        mouseReleaseX = e.getX();
+        mouseReleaseY = e.getY();
+
+        if (isDragging) {
+            Vector2 launchDirection = new Vector2(mouseReleaseX - mousePressX, mouseReleaseY - mousePressY);
+            double launchForce = launchDirection.getMagnitude();
+            launchDirection.normalize();
+            launchForce /= 10;
+
+            bird.applyForce(launchDirection.product(launchForce), launchDirection);
+            isDragging = false;
+        }
     }
 
     public void init() throws IOException {
@@ -76,6 +119,12 @@ public class AngryBirds extends Application {
 
         world = new World();
         world.setGravity(new Vector2(0, -9.8));
+
+//        Body background = new Body();
+//        background.addFixture(Geometry.createRectangle(1, 1));
+//        background.setMass(MassType.INFINITE);
+//        gameObjects.add(new GameObject("/background.png", background, new Vector2(0, 0), 1.1));
+//        index = gameObjects.size()-1;
 
         Body floor = new Body();
         floor.addFixture(Geometry.createRectangle(floorSize, 1));
@@ -110,31 +159,44 @@ public class AngryBirds extends Application {
         wall1.setMass(MassType.INFINITE);
         world.addBody(wall1);
 
-        Body bird = new Body();
+        bird = new Body();
         bird.addFixture(Geometry.createCircle(0.2));
-        bird.getTransform().setTranslation(0,2.4);
+        bird.getTransform().setTranslation(-5,2);
         bird.setMass(MassType.NORMAL);
         bird.getFixture(0).setRestitution(0.15);
         world.addBody(bird);
         bird.setBullet(true);
         gameObjects.add(new GameObject("/bird.png", bird, new Vector2(0,0), 0.1));
 
+        birdHolder = new Body();
+        birdHolder.addFixture(Geometry.createRectangle(0.4, 0.1));
+        birdHolder.getTransform().setTranslation(-5, 1.9);
+        birdHolder.setMass(MassType.INFINITE);
+        world.addBody(birdHolder);
 
-        createObject(6, 1.55, 0.3586, 3, "/woodVertical.png");
-        createObject(8.8, 1.55, 0.3586, 3, "/woodVertical.png");
-        createObject(7.5, 3.2, 3, 0.3586, "/woodHorizontal.png");
-        createObject(6.75, 4.9, 0.3586, 3, "/woodVertical.png");
-        createObject(8.25, 4.9, 0.3586, 3, "/woodVertical.png");
-        createObject(7.5, 6.4, 3, 0.25, "/woodHorizontal.png");
+        createObject(-5, 1, 1.5, 0.1, "lol", false);
+//        createObject(-5, 3, 1.5, 0.1, "lol", false);
+//        createObject(-4, 2, 0.1, 1.5, "lol", false);
+        createObject(-6, 2, 0.1, 1.5, "lol", false);
+
+        createObject(6, 1.55, 0.3586, 3, "/woodVertical.png", true);
+        createObject(8.8, 1.55, 0.3586, 3, "/woodVertical.png", true);
+        createObject(7.5, 3.2, 3, 0.3586, "/woodHorizontal.png", true);
+        createObject(6.75, 4.9, 0.3586, 3, "/woodVertical.png", true);
+        createObject(8.25, 4.9, 0.3586, 3, "/woodVertical.png", true);
+        createObject(7.5, 6.4, 3, 0.25, "/woodHorizontal.png", true);
     }
 
-    private void createObject(double locationX, double locationY, double width, double height, String imageFile) {
+    private void createObject(double locationX, double locationY, double width, double height, String imageFile, boolean useImage) {
         Body object = new Body();
         object.addFixture(Geometry.createRectangle(width, height));
         object.getTransform().setTranslation(locationX, locationY);
-        object.setMass(MassType.NORMAL);
+        object.setMass(MassType.INFINITE);
         world.addBody(object);
-        gameObjects.add(new GameObject(imageFile, object, new Vector2(0,0), 1.65));
+        if (useImage) {
+            object.setMass(MassType.NORMAL);
+            gameObjects.add(new GameObject(imageFile, object, new Vector2(0, 0), 1.65));
+        }
     }
 
     public void draw(FXGraphics2D graphics) {
@@ -162,6 +224,15 @@ public class AngryBirds extends Application {
     public void update(double deltaTime) {
         mousePicker.update(world, camera.getTransform((int) canvas.getWidth(), (int) canvas.getHeight()), 100);
         world.update(deltaTime);
+
+        //werkt niet omdat canvas.getwidth/2 en de andere niet automatisch translaten naar de camera
+//        gameObjects.remove(index);
+//        Body background = new Body();
+//        background.addFixture(Geometry.createRectangle(1, 1));
+//        background.getTransform().setTranslation(canvas.getWidth()/2,canvas.getHeight()/2);
+//        background.setMass(MassType.INFINITE);
+//        gameObjects.add(new GameObject("/background.png", background, new Vector2(0, 0), 1.1));
+//        index = gameObjects.size()-1;
     }
 
     public static void main(String[] args) {
