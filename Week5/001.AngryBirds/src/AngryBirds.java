@@ -39,6 +39,8 @@ public class AngryBirds extends Application {
     private double mouseReleaseY;
     private boolean isDragging = false;
     private int index;
+    private Vector2 startVector;
+    private Vector2 forceVector;
 
     private Body bird;
     private Body birdHolder;
@@ -75,15 +77,17 @@ public class AngryBirds extends Application {
             }
         }.start();
 
-        canvas.setOnMouseClicked(e -> {
+        canvas.setOnMousePressed(e -> {
             if (e.getButton() == MouseButton.MIDDLE) {
-                return;
+                try {
+                    init();
+                } catch (IOException ex) {
+                    throw new RuntimeException(ex);
+                }
             }
-            mouseClicked(e);
+            mousePressed(e);
         });
         canvas.setOnMouseReleased(e -> mouseReleased(e));
-
-        mousePicker = new MousePicker(canvas);
 
         stage.setScene(new Scene(mainPane, 1920, 1080));
         stage.setTitle("Angry Birds");
@@ -91,26 +95,25 @@ public class AngryBirds extends Application {
         draw(g2d);
     }
 
-    private void mouseClicked(MouseEvent e) {
-        world.removeBody(birdHolder);
+    private void mousePressed(MouseEvent e) {
+        if (e.getButton() == MouseButton.MIDDLE) {
+            return;
+        }
         mousePressX = e.getX();
         mousePressY = e.getY();
-        isDragging = true;
+        startVector = new Vector2(e.getX(), e.getY());
     }
 
     private void mouseReleased(MouseEvent e) {
+        if (e.getButton() == MouseButton.MIDDLE) {
+            return;
+        }
         mouseReleaseX = e.getX();
         mouseReleaseY = e.getY();
 
-        if (isDragging) {
-            Vector2 launchDirection = new Vector2(mouseReleaseX - mousePressX, mouseReleaseY - mousePressY);
-            double launchForce = launchDirection.getMagnitude();
-            launchDirection.normalize();
-            launchForce /= 10;
-
-            bird.applyForce(launchDirection.product(launchForce), launchDirection);
-            isDragging = false;
-        }
+        Vector2 forceVector = new Vector2(startVector.x-e.getX(), e.getY()-startVector.y);
+        this.bird.setMass(MassType.NORMAL);
+        this.bird.applyForce(forceVector);
     }
 
     public void init() throws IOException {
@@ -120,71 +123,60 @@ public class AngryBirds extends Application {
         world = new World();
         world.setGravity(new Vector2(0, -9.8));
 
-//        Body background = new Body();
-//        background.addFixture(Geometry.createRectangle(1, 1));
-//        background.setMass(MassType.INFINITE);
-//        gameObjects.add(new GameObject("/background.png", background, new Vector2(0, 0), 1.1));
-//        index = gameObjects.size()-1;
+        Body background = new Body();
+        background.addFixture(Geometry.createRectangle(1, 1));
+        background.setMass(MassType.INFINITE);
+        gameObjects.add(new GameObject("/background.png", background, new Vector2(0, 0), 1.8));
+        index = gameObjects.size()-1;
 
         Body floor = new Body();
         floor.addFixture(Geometry.createRectangle(floorSize, 1));
-        floor.getTransform().setTranslation(0, -0.5);
+        floor.getTransform().setTranslation(0, -5);
         floor.setMass(MassType.INFINITE);
         world.addBody(floor);
         gameObjects.add(new GameObject("/floor.png", floor, new Vector2(0,0), 1.6));
 
         Body floor2 = new Body();
         floor2.addFixture(Geometry.createRectangle(floorSize, 1));
-        floor2.getTransform().setTranslation(floorSize, -0.5);
+        floor2.getTransform().setTranslation(floorSize, -5);
         floor2.setMass(MassType.INFINITE);
         world.addBody(floor2);
         gameObjects.add(new GameObject("/floor.png", floor2, new Vector2(0,0), 1.6));
 
         Body floor3 = new Body();
         floor3.addFixture(Geometry.createRectangle(floorSize, 1));
-        floor3.getTransform().setTranslation(-floorSize, -0.5);
+        floor3.getTransform().setTranslation(-floorSize, -5);
         floor3.setMass(MassType.INFINITE);
         world.addBody(floor3);
         gameObjects.add(new GameObject("/floor.png", floor3, new Vector2(0,0), 1.6));
 
         Body wall2 = new Body();
         wall2.addFixture(Geometry.createRectangle(0.15, 10));
-        wall2.getTransform().setTranslation(-wallLocationX,5);
+        wall2.getTransform().setTranslation(-wallLocationX,0);
         wall2.setMass(MassType.INFINITE);
         world.addBody(wall2);
 
         Body wall1 = new Body();
         wall1.addFixture(Geometry.createRectangle(0.15, 10));
-        wall1.getTransform().setTranslation(wallLocationX,5);
+        wall1.getTransform().setTranslation(wallLocationX,0);
         wall1.setMass(MassType.INFINITE);
         world.addBody(wall1);
 
         bird = new Body();
         bird.addFixture(Geometry.createCircle(0.2));
-        bird.getTransform().setTranslation(-5,2);
-        bird.setMass(MassType.NORMAL);
+        bird.getTransform().setTranslation(-5,-3);
+        bird.setMass(MassType.INFINITE);
         bird.getFixture(0).setRestitution(0.15);
         world.addBody(bird);
         bird.setBullet(true);
         gameObjects.add(new GameObject("/bird.png", bird, new Vector2(0,0), 0.1));
 
-        birdHolder = new Body();
-        birdHolder.addFixture(Geometry.createRectangle(0.4, 0.1));
-        birdHolder.getTransform().setTranslation(-5, 1.9);
-        birdHolder.setMass(MassType.INFINITE);
-        world.addBody(birdHolder);
-
-        createObject(-5, 1, 1.5, 0.1, "lol", false);
-//        createObject(-5, 3, 1.5, 0.1, "lol", false);
-//        createObject(-4, 2, 0.1, 1.5, "lol", false);
-        createObject(-6, 2, 0.1, 1.5, "lol", false);
-
-        createObject(6, 1.55, 0.3586, 3, "/woodVertical.png", true);
-        createObject(8.8, 1.55, 0.3586, 3, "/woodVertical.png", true);
-        createObject(7.5, 3.2, 3, 0.3586, "/woodHorizontal.png", true);
-        createObject(6.75, 4.9, 0.3586, 3, "/woodVertical.png", true);
-        createObject(8.25, 4.9, 0.3586, 3, "/woodVertical.png", true);
-        createObject(7.5, 6.4, 3, 0.25, "/woodHorizontal.png", true);
+        createObject(6, -3.45, 0.3586, 3, "/woodVertical.png", true);
+        createObject(8.8, -3.45, 0.3586, 3, "/woodVertical.png", true);
+        createObject(7.5, 3.2-5, 3, 0.3586, "/woodHorizontal.png", true);
+        createObject(6.75, 4.9-5, 0.3586, 3, "/woodVertical.png", true);
+        createObject(8.25, 4.9-5, 0.3586, 3, "/woodVertical.png", true);
+        createObject(7.5, 6.4-5, 3, 0.25, "/woodHorizontal.png", true);
     }
 
     private void createObject(double locationX, double locationY, double width, double height, String imageFile, boolean useImage) {
@@ -222,7 +214,6 @@ public class AngryBirds extends Application {
     }
 
     public void update(double deltaTime) {
-        mousePicker.update(world, camera.getTransform((int) canvas.getWidth(), (int) canvas.getHeight()), 100);
         world.update(deltaTime);
 
         //werkt niet omdat canvas.getwidth/2 en de andere niet automatisch translaten naar de camera
