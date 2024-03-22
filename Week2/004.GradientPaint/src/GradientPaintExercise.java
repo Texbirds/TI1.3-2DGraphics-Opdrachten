@@ -32,7 +32,7 @@ public class GradientPaintExercise extends Application {
         graphics.setBackground(Color.white);
         graphics.clearRect(0, 0, (int) canvas.getWidth(), (int) canvas.getHeight());
 
-        Rectangle2D square2D = new Rectangle2D.Double(0, 0, 500, 500);
+        Rectangle2D square2D = new Rectangle2D.Double(0, 0, canvas.getWidth(), canvas.getHeight());
         Point2D point2D = new Point2D.Double(square2D.getWidth()/2, square2D.getHeight()/2);
         float[] fractions = new float[5];
         fractions[0] = 0.1f;
