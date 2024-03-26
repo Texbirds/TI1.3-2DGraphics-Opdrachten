@@ -1,6 +1,9 @@
 import javafx.animation.AnimationTimer;
 import javafx.application.Application;
+import javafx.geometry.Pos;
+import javafx.scene.control.Button;
 import javafx.scene.Scene;
+import javafx.scene.layout.HBox;
 import javafx.stage.Stage;
 import org.jfree.fx.FXGraphics2D;
 import java.util.ArrayList;
@@ -17,6 +20,7 @@ public class ParticleSimulation extends Application {
     private List<Smoke> smokes;
     private List<Firework> fireworks;
     private List<Fire> fires;
+    private List<Image> images;
     private ResizableCanvas canvas;
     private boolean activateSmoke;
 
@@ -25,10 +29,12 @@ public class ParticleSimulation extends Application {
         BorderPane mainPane = new BorderPane();
         canvas = new ResizableCanvas(g -> draw(g), mainPane);
         mainPane.setCenter(canvas);
+        mainPane.setTop(createButtonBar());
         FXGraphics2D g2d = new FXGraphics2D(canvas.getGraphicsContext2D());
         fireworks = new ArrayList<>();
         smokes = new ArrayList<>();
         fires = new ArrayList<>();
+        images = new ArrayList<>();
         activateSmoke = false;
 
 
@@ -58,9 +64,19 @@ public class ParticleSimulation extends Application {
         draw(g2d);
     }
 
-    public void init() {
+    private HBox createButtonBar() {
+        Button fireButton = new Button("Fire");
+        Button fireworkButton = new Button("Firework");
+        Button smokeButton = new Button("Smoke");
+        Button imageButton = new Button("Image");
 
+        HBox buttonBar = new HBox(fireButton, fireworkButton, smokeButton, imageButton);
+        buttonBar.setSpacing(10);
+        buttonBar.setAlignment(Pos.CENTER);
+
+        return buttonBar;
     }
+
 
     private void mousePressed(MouseEvent e) {
         if (e.getButton() == MouseButton.SECONDARY) {
@@ -69,9 +85,15 @@ public class ParticleSimulation extends Application {
         } else if (e.getButton() == MouseButton.PRIMARY) {
             activateSmoke = true;
         } else if (e.getButton() == MouseButton.MIDDLE) {
-            Fire currentFire = new Fire(e.getX(), e.getY());
-            fires.add(currentFire);
-            currentFire.activate();
+            if (e.isShiftDown()) {
+                Image currentImage = new Image(e.getX(), e.getY());
+                images.add(currentImage);
+                currentImage.activate();
+            } else {
+                Fire currentFire = new Fire(e.getX(), e.getY());
+                fires.add(currentFire);
+                currentFire.activate();
+            }
             activateSmoke = false;
         } else {
             activateSmoke = false;
@@ -103,6 +125,10 @@ public class ParticleSimulation extends Application {
         for (Fire fire : fires) {
             fire.draw(graphics);
         }
+
+        for (Image image : images) {
+            image.draw(graphics);
+        }
     }
 
     private void update(double deltaTime) {
@@ -118,8 +144,13 @@ public class ParticleSimulation extends Application {
             fire.update(deltaTime);
         }
 
+        for (Image image : images) {
+            image.update(deltaTime);
+        }
+
         fires.removeIf(Fire::isFinished);
         fireworks.removeIf(Firework::isFinished);
         smokes.removeIf(Smoke::isFinished);
+        images.removeIf(Image::isFinished);
     }
 }

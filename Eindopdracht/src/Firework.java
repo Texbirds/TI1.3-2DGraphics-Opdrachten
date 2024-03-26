@@ -10,13 +10,16 @@ public class Firework {
     private static final double INITIAL_SPEED = 300;
     private static final double EXPLOSION_SPEED = 700;
 
+    private double radius = 10;
+    private double fadeTime = 2.0;
+    private double gravity = 200;
+
+    private boolean exploded = false;
+
     private List<Particle> particles;
-    private double gravity;
     private double x;
     private double y;
-    private double radius;
-    private double fadeTime;
-    private boolean exploded;
+
     private Color color;
 
     public Firework(double x, double y, Color color) {
@@ -24,10 +27,6 @@ public class Firework {
         this.y = y;
         this.color = color;
         particles = new ArrayList<>();
-        exploded = false;
-        this.radius = 10;
-        this.gravity = 200;
-        this.fadeTime = 2.0;
     }
 
     public void update(double deltaTime) {

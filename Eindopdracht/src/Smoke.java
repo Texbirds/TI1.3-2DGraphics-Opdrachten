@@ -10,22 +10,21 @@ public class Smoke {
     private static final double INITIAL_SPEED = 20;
     private static final double EXPLOSION_SPEED = 30;
 
+    private double radius = 15;
+    private double gravity = -200;
+    private double fadeTime = 1.0;
+
+    private boolean spawned = false;
+
     private List<Particle> particles;
-    private double gravity;
     private double x;
-    private double radius;
     private double y;
-    private double fadeTime;
-    private boolean spawned;
+
 
     public Smoke(double x, double y) {
         this.x = x;
         this.y = y;
         particles = new ArrayList<>();
-        spawned = false;
-        this.radius = 15;
-        this.gravity = -200;
-        this.fadeTime = 1.0;
     }
 
     public void update(double deltaTime) {

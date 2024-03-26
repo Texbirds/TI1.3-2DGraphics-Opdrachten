@@ -1,39 +1,50 @@
-import java.awt.*;
 import org.jfree.fx.FXGraphics2D;
 
+import javax.imageio.ImageIO;
+import java.awt.*;
+import java.awt.geom.AffineTransform;
+import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
-public class Fire {
-    private static final int NUM_PARTICLES = 5;
-    private static final double INITIAL_SPEED = 40;
-    private static final double EXPLOSION_SPEED = 100;
+public class Image {
+    private static final int NUM_PARTICLES = 1;
+    private static final double INITIAL_SPEED = 100;
+    private static final double EXPLOSION_SPEED = 25;
 
+    private double fadeTime = 0;
     private double radius = 20;
-    private double fadeTime = 0.5;
-    private double gravity = -300;
+    private double gravity = 0;
     private long activationTime = 0;
 
     private boolean spawned = false;
     private boolean active = false;
 
     private List<Particle> particles;
-
     private double x;
     private double y;
 
+    private BufferedImage bird;
 
-    public Fire(double x, double y) {
+
+    public Image(double x, double y) {
         this.x = x;
         this.y = y;
         this.particles = new ArrayList<>();
+        this.spawned = false;
+        this.active = false;
+
+
+        init();
     }
 
     public void update(double deltaTime) {
         if (active) {
             long currentTime = System.currentTimeMillis();
-            if (currentTime - activationTime > 5000) {
+            if (currentTime - activationTime > 2500) {
                 active = false;
                 particles.clear();
                 spawned = true;
@@ -48,6 +59,14 @@ public class Fire {
         System.out.println(particles.size());
     }
 
+    public void init() {
+        try {
+            bird = ImageIO.read(getClass().getResource("/bird.png"));
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
     public void activate() {
         active = true;
         activationTime = System.currentTimeMillis();
@@ -56,10 +75,11 @@ public class Fire {
     public void draw(FXGraphics2D graphics) {
         if (active) {
             for (Particle particle : particles) {
-                int alphaCalculated = (int) (particle.getAlpha()*255);
-                Color particleColor = new Color(255, alphaCalculated, 1, alphaCalculated);
-                graphics.setColor(particleColor);
-                graphics.fillOval((int) particle.x, (int) particle.y, (int) particle.getRadius(), (int) particle.getRadius());
+                AffineTransform tx = new AffineTransform();
+                tx.translate(particle.x, particle.y);
+                tx.scale(0.1, 0.1);
+
+                graphics.drawImage(bird, tx, null);
             }
         }
     }
@@ -73,6 +93,9 @@ public class Fire {
             double vx = Math.cos(angle) * speed;
             double vy = Math.sin(angle) * speed;
             particles.add(new Particle(x, y, vx, vy, radius, gravity, fadeTime));
+        }
+        if (particles.size() >= 100) {
+            particles.remove(particles.size()-1);
         }
     }
 
