@@ -29,7 +29,6 @@ public class ParticleSimulation extends Application {
         BorderPane mainPane = new BorderPane();
         canvas = new ResizableCanvas(g -> draw(g), mainPane);
         mainPane.setCenter(canvas);
-        mainPane.setTop(createButtonBar());
         FXGraphics2D g2d = new FXGraphics2D(canvas.getGraphicsContext2D());
         fireworks = new ArrayList<>();
         smokes = new ArrayList<>();
@@ -62,19 +61,6 @@ public class ParticleSimulation extends Application {
         stage.setTitle("Particle simulation");
         stage.show();
         draw(g2d);
-    }
-
-    private HBox createButtonBar() {
-        Button fireButton = new Button("Fire");
-        Button fireworkButton = new Button("Firework");
-        Button smokeButton = new Button("Smoke");
-        Button imageButton = new Button("Image");
-
-        HBox buttonBar = new HBox(fireButton, fireworkButton, smokeButton, imageButton);
-        buttonBar.setSpacing(10);
-        buttonBar.setAlignment(Pos.CENTER);
-
-        return buttonBar;
     }
 
 
